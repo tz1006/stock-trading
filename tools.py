@@ -354,3 +354,8 @@ contrast(code1, code2, rate=3, day=100)
   wave_hist(code, rate=0, day=100)
     ''')
 
+
+
+if name == '__main__':
+    import code
+    code.interact(banner = "", local = locals())
