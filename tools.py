@@ -356,6 +356,6 @@ contrast(code1, code2, rate=3, day=100)
 
 
 
-if name == '__main__':
+if __name__ == '__main__':
     import code
     code.interact(banner = "", local = locals())
