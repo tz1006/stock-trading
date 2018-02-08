@@ -80,6 +80,28 @@ def price_now(stock_code):
     return (price, average)
 
 
+def price_now(stock_code):
+    url = 'http://api.finance.ifeng.com/amin/?code=%s&type=now' % sscode(stock_code)
+    r = None
+    while r == None:
+        try:
+            r = s.get(url, timeout=timeout)
+        except:
+            pass
+    if r.text == '':
+        print('无法获取 %s 价格。' % stock_code)
+        price = ''
+        average = ''
+    else:
+        now = r.json()[-1]['record'][-1]
+        # Price
+        price = float(now[1])
+        # Average
+        average = float(now[4])
+    return (price, average
+
+
+
 def ma_now(stock_code, debug=0):
     type_url = 'http://suggest.eastmoney.com/SuggestData/Default.aspx?type=1&input=%s' % stock_code
     type_r = None
