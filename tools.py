@@ -60,24 +60,17 @@ def share_market_code(code):
 #######---get-data---#######
 
 def price_now(stock_code):
-    url = 'http://api.finance.ifeng.com/aminhis/?code=%s&type=five' % sscode(stock_code)
+    url = 'http://api.finance.ifeng.com/amin/?code=%s&type=now' % sscode(stock_code)
     r = None
     while r == None:
         try:
             r = s.get(url, timeout=timeout)
         except:
             pass
-    if r.text == '':
-        print('无法获取 %s 价格。' % stock_code)
-        price = ''
-        average = ''
-    else:
-        now = r.json()[-1]['record'][-1]
-        # Price
-        price = float(now[1])
-        # Average
-        average = float(now[4])
-    return (price, average)
+    price = float(r.json()[2])
+    wave = float(r.json()[3])
+    high = float(r.json()[8])
+    return (price, wave, high)
 
 
 def price_now(stock_code):
