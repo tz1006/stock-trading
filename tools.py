@@ -70,7 +70,33 @@ def price_now(stock_code):
     price = float(r.json()[2])
     wave = float(r.json()[3])
     high = float(r.json()[8])
+    #print((price, wave, high))
     return (price, wave, high)
+
+
+def price_today(stock_code,minute=3):
+    url = 'http://api.finance.ifeng.com/aminhis/?code=%s&type=five' % sscode(stock_code)
+    r = None
+    while r == None:
+        try:
+            r = s.get(url, timeout=timeout)
+        except:
+            pass
+    close_price = float(r.json()[-1]['1'])
+    #print(close_price)
+    result = []
+    if minute == 0:
+        for i in range(len(r.json()[-1]['record'])):
+            time = r.json()[-1]['record'][i][0].split(' ')[1]
+            price = float(r.json()[-1]['record'][i][1])
+            wave = round(((1 - (close_price / price)) * 100), 2)
+            result.append((time, price, wave))
+    else:
+        for i in range(minute):
+            price = float(r.json()[-1]['record'][-i-1][1])
+            wave = round(((1 - (close_price / price)) * 100), 2)
+            result.append((price, wave))
+    return result
 
 
 def price_now(stock_code):
@@ -91,7 +117,7 @@ def price_now(stock_code):
         price = float(now[1])
         # Average
         average = float(now[4])
-    return (price, average
+    return (price, average)
 
 
 
