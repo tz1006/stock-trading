@@ -7,6 +7,8 @@ from tools import *
 class stock():
     def __init__(self, code):
         self.code = code
+        self.name = stock_name(code)
+        self.open_price = 0
     # 价格
     def price(self):
         return price_now(self.code)
