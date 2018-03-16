@@ -36,9 +36,9 @@ class stock():
         r = None
         while r == None:
             try:
-                r = self.__s.get(url, timeout=5)
+                r = self.__s.get(url, timeout=10)
             except:
-            	pass
+            	print(1)
         isopen = r.json()['data'][0]['isopen']
         if isopen == 1:
             return True
@@ -58,9 +58,9 @@ class stock():
         r = None
         while r == None:
             try:
-                r = self.__s.get(url, timeout=5)
+                r = self.__s.get(url, timeout=10)
             except:
-            	pass
+            	print(2)
         name = r.text.split("\"")[1].split(",",1)[0]
         return name
     # (价格, 均价)
@@ -202,7 +202,6 @@ class stock():
         .macd
         .help
     ''')
-
 
 
 
