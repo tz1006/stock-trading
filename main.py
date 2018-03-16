@@ -434,7 +434,7 @@ class worklist():
     def __load(self):
         self.list.clear()
         with ThreadPoolExecutor(max_workers=4) as executor:
-            executor.map(self.add, sl.list)
+            executor.map(self.add, sl.list[1:1001])
         self.__drop()
     def __drop(self):
         c = 0
