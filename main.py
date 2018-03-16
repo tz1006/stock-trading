@@ -12,8 +12,7 @@ from datetime import datetime
 from pytz import timezone
 from threading import Thread
 import json
-import multiprocessing
-
+from concurrent.futures import ThreadPoolExecutor
 
 
 
@@ -414,9 +413,11 @@ class stocklist():
 
 
 
-
+        
+        
 class worklist():
     def __init__(self):
+        self.list = []
         message = '开始加载股票到wl，一共%s个' % len(sl.list)
         print(message)
         start_time = datetime.now()
@@ -426,53 +427,23 @@ class worklist():
         message = '已加载%s支股票，耗时%s秒' %(len(self.list), timedelsta)
         print(message)
     def __load(self):
-        pool = multiprocessing.Pool(processes=8)
-        result = pool.map_async(self.add, sl.list)
-        result.wait()
-        if result.ready():  # 进程函数是否已经启动了
-            if result.successful():  # 进程函数是否执行成功
-                self.list = result.get()  # 进程函数返回值
+        self.list.clear()
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            executor.map(self.add, sl.list)
         self.__drop()
     def __drop(self):
         c = 0
-        for i in self.list:
+        for i in wl.list:
             if i.status == False:
-                self.list.remove(i)
+                wl.list.remove(i)
                 c += 1
         message = '移除%s个停牌股票' % c
         print(message)
     def add(self, i):
         a = stock(i)
-        #print(i)
-        return a
-    def wave(self, range):
-        start_time = datetime.now()
-        li = []
-        pool = multiprocessing.Pool(processes=8)
-        results = []
-        for i in self.list[1:40]:
-            result = pool.apply_async(self.check_wave, (i, range))
-            results.append(result)
-        for i in results:
-            i.wait() 
-        for i in results:
-            if i.ready():  # 进程函数是否已经启动了
-                if i.successful():  # 进程函数是否执行成功
-                    if i.get() != None: # 进程函数返回值
-                        li.append(i.get())
-        end_time = datetime.now()
-        timedelsta = (end_time - start_time).seconds
-        message = '找到%s个涨幅大于%s的股票，耗时%s秒' % (len(li), range, timedelsta)
-        print(message)
-        return li
-    def check_wave(self, instance, range):
-        wave = instance.wave()[0]
-        if wave > range:
-        	return instance.code
-        else:
-            return
-
-
+        self.list.append(a)
+        print(i)
+        #return a
 
 
 
