@@ -16,6 +16,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 
 
+
 class stock():
     def __init__(self, code):
         self.__s = requests.session()
@@ -32,7 +33,12 @@ class stock():
     # 停牌
     def __status(self):
         url = 'https://apiapp.finance.ifeng.com/stock/isopen?code=%s' % self.sscode
-        r = self.__s.get(url)
+        r = None
+        while r == None:
+            try:
+                r = self.__s.get(url, timeout=5)
+            except:
+            	pass
         isopen = r.json()['data'][0]['isopen']
         if isopen == 1:
             return True
@@ -49,7 +55,12 @@ class stock():
     # 股票名
     def __name(self):
         url = 'http://hq.sinajs.cn/list=%s' % self.sscode
-        r = self.__s.get(url)
+        r = None
+        while r == None:
+            try:
+                r = self.__s.get(url, timeout=5)
+            except:
+            	pass
         name = r.text.split("\"")[1].split(",",1)[0]
         return name
     # (价格, 均价)
@@ -195,13 +206,7 @@ class stock():
 
 
 
-import requests
-import os
-from bs4 import BeautifulSoup
-from datetime import datetime
-from pytz import timezone
-from threading import Thread
-import json
+
 
 class stocklist():
     def __init__(self):
